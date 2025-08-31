@@ -1,39 +1,99 @@
+import { useEffect, useRef } from 'react'
+import { animate } from 'animejs'
 import './VideoControls.css'
 
 interface VideoControlsProps {
   isPlaying: boolean
+  progress: number
   onTogglePlayPause: () => void
+  onSeek: (progress: number) => void
 }
 
-const VideoControls = ({ isPlaying, onTogglePlayPause }: VideoControlsProps) => {
+const VideoControls = ({
+  isPlaying,
+  progress,
+  onTogglePlayPause,
+  onSeek
+}: VideoControlsProps) => {
+  const headRef = useRef<HTMLDivElement>(null)
+  const barRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const isScrubbing = useRef(false)
+
+  useEffect(() => {
+    if (headRef.current && barRef.current) {
+      const width = barRef.current.clientWidth - 12
+      animate(headRef.current, {
+        translateX: progress * width,
+        duration: isScrubbing.current ? 0 : 200,
+        easing: 'easeOutQuad'
+      })
+    }
+  }, [progress])
+
+  useEffect(() => {
+    if (buttonRef.current) {
+      animate(buttonRef.current, {
+        scale: [0.9, 1],
+        easing: 'spring(1, 80, 10, 0)',
+        duration: 500
+      })
+    }
+  }, [isPlaying])
+
+  useEffect(() => {
+    const bar = barRef.current
+    if (!bar) return
+
+    const updateProgress = (e: PointerEvent) => {
+      if (!barRef.current) return
+      const rect = barRef.current.getBoundingClientRect()
+      const newProgress = (e.clientX - rect.left) / rect.width
+      onSeek(Math.min(Math.max(newProgress, 0), 1))
+    }
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (isScrubbing.current) {
+        updateProgress(e)
+      }
+    }
+
+    const handlePointerUp = (e: PointerEvent) => {
+      if (isScrubbing.current) {
+        updateProgress(e)
+        isScrubbing.current = false
+        window.removeEventListener('pointermove', handlePointerMove)
+        window.removeEventListener('pointerup', handlePointerUp)
+      }
+    }
+
+    const handlePointerDown = (e: PointerEvent) => {
+      isScrubbing.current = true
+      updateProgress(e)
+      window.addEventListener('pointermove', handlePointerMove)
+      window.addEventListener('pointerup', handlePointerUp)
+    }
+
+    bar.addEventListener('pointerdown', handlePointerDown)
+    return () => {
+      bar.removeEventListener('pointerdown', handlePointerDown)
+      window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('pointerup', handlePointerUp)
+    }
+  }, [onSeek])
+
   return (
     <div className="video-controls">
-      <div className="video-progress">
-        <svg width="1422" height="2" viewBox="0 0 1422 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1.70755 1H1420.96" stroke="#4D413F" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
-        <div className="video-position">
-          <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g filter="url(#filter0_d_1_19743)">
-              <ellipse cx="6.38295" cy="6.38295" rx="6.38295" ry="6.38295" transform="matrix(-1 0 0 1 15.811 0.617065)" fill="#6A7967"/>
-            </g>
-            <defs>
-              <filter id="filter0_d_1_19743" x="0.745105" y="0.617065" width="17.3659" height="18.0659" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                <feOffset dy="3"/>
-                <feGaussianBlur stdDeviation="1.15"/>
-                <feComposite in2="hardAlpha" operator="out"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_19743"/>
-                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_19743" result="shape"/>
-              </filter>
-            </defs>
-          </svg>
-        </div>
+      <div className="video-progress" ref={barRef}>
+        <div className="progress-track" />
+        <div
+          className="progress-fill"
+          style={{ width: `${progress * 100}%` }}
+        />
+        <div className="video-head" ref={headRef} />
       </div>
-      
-      <button className="play-pause-button" onClick={onTogglePlayPause}>
+
+      <button className="play-pause-button" onClick={onTogglePlayPause} ref={buttonRef}>
         {isPlaying ? (
           // Pause icon (two bars) - taller and perfectly centered
           <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { animate, createTimeline } from 'animejs'
 import './VideoPartyScreen.css'
 import MenuBar from './MenuBar.tsx'
 import VideoPlayer from './VideoPlayer.tsx'
@@ -34,6 +35,26 @@ const VideoPartyScreen = () => {
       return () => window.removeEventListener('resize', updateChatHeight)
     }
   }, [isChatVisible])
+
+  useEffect(() => {
+    animate('.menu-bar', { opacity: 0, translateY: -20, duration: 0 })
+    animate('.video-player', { opacity: 0, scale: 0.98, duration: 0 })
+    animate('.video-controls', { opacity: 0, translateY: 20, duration: 0 })
+
+    const tl = createTimeline({ duration: 600 })
+    tl
+      .add('.menu-bar', { opacity: 1, translateY: 0, easing: 'easeOutQuad' })
+      .add(
+        '.video-player',
+        { opacity: 1, scale: 1, easing: 'easeOutQuad' },
+        '-=200'
+      )
+      .add(
+        '.video-controls',
+        { opacity: 1, translateY: 0, easing: 'easeOutQuad' },
+        '-=400'
+      )
+  }, [])
 
   return (
     <div className="netflix-party-screen">

@@ -17,19 +17,34 @@
   position: relative;
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .video-progress svg {
   width: 100%;
   height: 2px;
+  pointer-events: none;
 }
 
 .video-position {
   position: absolute;
-  left: 0;
   top: 50%;
-  transform: translateY(-50%);
+  left: 0;
+  width: 12px;
+  height: 12px;
+  background: #6a7967;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+  opacity: 0.8;
   z-index: 2;
+}
+
+.video-progress:hover .video-position {
+  transform: translate(-50%, -50%) scale(1.3);
+  opacity: 1;
 }
 
 .play-pause-button {

@@ -53,14 +53,22 @@ function UserFred({ onClick }: { onClick: () => void }) {
 }
 
 function ProfileSelectionScreen({ onSelectUser }: { onSelectUser: (user: string) => void }) {
+  const backgroundStyle = {
+    background: "#e8e8e8 url('/background-image.png') center/cover no-repeat",
+  }
+
   return (
-    <div className="bg-white min-h-screen flex flex-col items-center px-4" data-name="Netflix Party First Screen">
-      <div className="font-['Jacques_Francois:Regular',_sans-serif] leading-[0] not-italic text-[clamp(1.75rem,4vw,2.5rem)] text-black text-nowrap mt-[clamp(3rem,8vh,6rem)]">
+    <div
+      className="min-h-screen flex flex-col items-center px-4"
+      style={backgroundStyle}
+      data-name="Netflix Party First Screen"
+    >
+      <div className="font-['Jacques_Francois:Regular',_sans-serif] leading-[0] not-italic text-[clamp(1.75rem,4vw,2.5rem)] text-black text-nowrap mt-24">
         <p className="leading-[normal] whitespace-pre">Who's Watching....</p>
       </div>
 
       <div className="flex-1 flex items-center justify-center">
-        <div className="flex gap-[clamp(3rem,8vw,6rem)] items-center justify-center flex-wrap">
+        <div className="flex gap-12 items-center justify-center flex-wrap">
           <UserFred onClick={() => onSelectUser('Fred')} />
           <UserAvalene onClick={() => onSelectUser('Avalene')} />
         </div>
@@ -146,6 +154,9 @@ function PasswordSubmitBox({ password, setPassword, onSubmit }: { password: stri
           onChange={e => setPassword(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
+          onKeyDown={e => {
+            if (e.key === 'Enter') onSubmit()
+          }}
           placeholder="..."
           className={`w-full bg-transparent border-none outline-none font-['Jura:Regular',_sans-serif] font-normal leading-[normal] text-[clamp(1.25rem,2vw,1.5rem)] text-black placeholder:text-black/60 ${!focused && password === '' ? 'text-center' : 'text-left'}`}
         />
@@ -156,21 +167,25 @@ function PasswordSubmitBox({ password, setPassword, onSubmit }: { password: stri
 }
 
 function PasswordScreen({ selectedUser, onBack, onSubmit, password, setPassword, error }: { selectedUser: string; onBack: () => void; onSubmit: () => void; password: string; setPassword: (v: string) => void; error: string }) {
+  const backgroundStyle = {
+    background: "#e8e8e8 url('/background-image.png') center/cover no-repeat",
+  }
+
   return (
-    <div className="bg-white min-h-screen flex flex-col items-center px-4 relative" data-name="Netflix Party First Screen">
-      <div className="font-['Jacques_Francois:Regular',_sans-serif] leading-[0] not-italic text-[clamp(1.75rem,4vw,2.5rem)] text-black text-nowrap mt-[clamp(3rem,8vh,6rem)]">
+    <div className="min-h-screen flex flex-col items-center px-4 relative" style={backgroundStyle} data-name="Netflix Party First Screen">
+      <div className="font-['Jacques_Francois:Regular',_sans-serif] leading-[0] not-italic text-[clamp(1.75rem,4vw,2.5rem)] text-black text-nowrap mt-24">
         <p className="leading-[normal] whitespace-pre">Who's Watching....</p>
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="flex items-center justify-center mb-[clamp(2rem,6vh,4rem)] relative">
+        <div className="flex items-center justify-center mb-8 relative">
           <UserGreeting selectedUser={selectedUser} />
           <div className="absolute right-[-3rem] top-1/2 -translate-y-1/2">
             <BackButton onClick={onBack} />
           </div>
         </div>
 
-        <div className="flex flex-col gap-9 items-center justify-center w-full max-w-[881px] px-4">
+        <div className="flex flex-col gap-6 items-center justify-center w-full max-w-md px-4">
           <div className="font-['Jura:SemiBold',_sans-serif] font-semibold leading-[0] text-[clamp(1.25rem,2vw,1.5rem)] text-black text-nowrap">
             <p className="leading-[normal] whitespace-pre">Password:</p>
           </div>

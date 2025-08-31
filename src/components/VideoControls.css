@@ -47,6 +47,12 @@
   opacity: 1;
 }
 
+.control-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .play-pause-button {
   background: none;
   border: none;
@@ -67,4 +73,24 @@
 
 .play-pause-button:hover {
   opacity: 0.8;
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.volume-control input[type='range'] {
+  width: 80px;
+}
+
+.fullscreen-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

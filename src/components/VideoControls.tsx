@@ -15,6 +15,7 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
   const progressVal = useRef(0)
   const [progress, setProgress] = useState(0)
   const [isScrubbing, setIsScrubbing] = useState(false)
+  const [volume, setVolume] = useState(1)
 
   useEffect(() => {
     const vid = videoRef.current
@@ -55,6 +56,22 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
       handleScrub(e.clientX)
       setIsScrubbing(false)
       e.currentTarget.releasePointerCapture(e.pointerId)
+    }
+  }
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const vol = parseFloat(e.target.value)
+    setVolume(vol)
+    if (videoRef.current) videoRef.current.volume = vol
+  }
+
+  const handleFullscreen = () => {
+    const vid = videoRef.current
+    if (!vid) return
+    if (document.fullscreenElement) {
+      document.exitFullscreen()
+    } else {
+      vid.requestFullscreen?.()
     }
   }
 
@@ -105,18 +122,48 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
         <div className="video-position" ref={progressRef} />
       </div>
 
-      <button className="play-pause-button" onClick={onTogglePlayPause} ref={buttonRef}>
-        {isPlaying ? (
-          <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="18.2" y="4" width="3.6" height="16" rx="1.8" fill="#5D5D5D" />
-            <rect x="26.2" y="4" width="3.6" height="16" rx="1.8" fill="#5D5D5D" />
+      <div className="control-buttons">
+        <div className="volume-control">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#5D5D5D" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 9v6h4l5 5V4L7 9H3z" />
           </svg>
-        ) : (
-          <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16.6 4L31.4 12L16.6 20V4Z" fill="#5D5D5D" />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={handleVolumeChange}
+          />
+        </div>
+
+        <button className="play-pause-button" onClick={onTogglePlayPause} ref={buttonRef}>
+          {isPlaying ? (
+            <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="18.2" y="4" width="3.6" height="16" rx="1.8" fill="#5D5D5D" />
+              <rect x="26.2" y="4" width="3.6" height="16" rx="1.8" fill="#5D5D5D" />
+            </svg>
+          ) : (
+            <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.6 4L31.4 12L16.6 20V4Z" fill="#5D5D5D" />
+            </svg>
+          )}
+        </button>
+
+        <button className="fullscreen-btn" onClick={handleFullscreen}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#5D5D5D"
+            strokeWidth="2"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M4 4h6v2H6v4H4V4zm14 0h-6v2h4v4h2V4zM4 14h2v4h4v2H4v-6zm16 0h-2v4h-4v2h6v-6z" />
           </svg>
-        )}
-      </button>
+        </button>
+      </div>
     </div>
   )
 }

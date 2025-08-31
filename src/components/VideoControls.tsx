@@ -12,20 +12,25 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
   const progressBarRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const progressVal = useRef(0)
   const [progress, setProgress] = useState(0)
   const [isScrubbing, setIsScrubbing] = useState(false)
 
   useEffect(() => {
     const vid = videoRef.current
     if (!vid) return
+
+    let raf: number
     const update = () => {
       if (!isScrubbing) {
         const pct = vid.duration ? vid.currentTime / vid.duration : 0
         setProgress(pct)
       }
+      raf = requestAnimationFrame(update)
     }
-    vid.addEventListener('timeupdate', update)
-    return () => vid.removeEventListener('timeupdate', update)
+
+    update()
+    return () => cancelAnimationFrame(raf)
   }, [videoRef, isScrubbing])
 
   const handleScrub = (clientX: number) => {
@@ -38,6 +43,7 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
   }
 
   const onPointerDown = (e: React.PointerEvent) => {
+    e.currentTarget.setPointerCapture(e.pointerId)
     setIsScrubbing(true)
     handleScrub(e.clientX)
   }
@@ -48,6 +54,7 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
     if (isScrubbing) {
       handleScrub(e.clientX)
       setIsScrubbing(false)
+      e.currentTarget.releasePointerCapture(e.pointerId)
     }
   }
 
@@ -64,13 +71,24 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
   useEffect(() => {
     if (progressRef.current && progressBarRef.current) {
       const width = progressBarRef.current.clientWidth
-      animate(progressRef.current, {
-        left: progress * width,
-        duration: 150,
-        easing: 'linear'
-      })
+      progressRef.current.style.left = `${progress * width}px`
     }
+    progressVal.current = progress
   }, [progress])
+
+  useEffect(() => {
+    if (!progressBarRef.current) return
+    const bar = progressBarRef.current
+    const update = () => {
+      if (progressRef.current) {
+        const width = bar.clientWidth
+        progressRef.current.style.left = `${progressVal.current * width}px`
+      }
+    }
+    const observer = new ResizeObserver(update)
+    observer.observe(bar)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className="video-controls">
@@ -80,7 +98,6 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endScrub}
-        onPointerLeave={endScrub}
       >
         <svg width="100%" height="2" viewBox="0 0 1422 2" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.70755 1H1420.96" stroke="#4D413F" strokeWidth="2" strokeLinecap="round" />

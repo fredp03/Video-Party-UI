@@ -76,6 +76,7 @@
 }
 
 .volume-control {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -83,6 +84,17 @@
 
 .volume-control input[type='range'] {
   width: 80px;
+}
+
+.volume-indicator {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #ccc;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
 .fullscreen-btn {

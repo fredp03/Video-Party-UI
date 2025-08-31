@@ -19,6 +19,8 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
   const [boosted, setBoosted] = useState(false)
   const audioCtxRef = useRef<AudioContext | null>(null)
   const gainRef = useRef<GainNode | null>(null)
+  const [showVolumeIndicator, setShowVolumeIndicator] = useState(false)
+  const hideVolumeTimer = useRef<number | null>(null)
 
   useEffect(() => {
     const vid = videoRef.current
@@ -67,6 +69,9 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
     setVolume(vol)
     if (videoRef.current) videoRef.current.volume = Math.min(vol, 1)
     if (gainRef.current) gainRef.current.gain.value = vol
+    setShowVolumeIndicator(true)
+    if (hideVolumeTimer.current) clearTimeout(hideVolumeTimer.current)
+    hideVolumeTimer.current = window.setTimeout(() => setShowVolumeIndicator(false), 800)
   }
 
   const handleVolumePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -78,6 +83,16 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
       if (videoRef.current) videoRef.current.volume = clamped
       if (gainRef.current) gainRef.current.gain.value = clamped
     }
+  }
+
+  const handleVolumeDoubleClick = () => {
+    const vol = 0
+    setVolume(vol)
+    if (videoRef.current) videoRef.current.volume = vol
+    if (gainRef.current) gainRef.current.gain.value = vol
+    setShowVolumeIndicator(true)
+    if (hideVolumeTimer.current) clearTimeout(hideVolumeTimer.current)
+    hideVolumeTimer.current = window.setTimeout(() => setShowVolumeIndicator(false), 800)
   }
 
   const handleFullscreen = () => {
@@ -155,7 +170,11 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
       </div>
 
       <div className="control-buttons">
-        <div className="volume-control" onPointerDown={handleVolumePointerDown}>
+        <div
+          className="volume-control"
+          onPointerDown={handleVolumePointerDown}
+          onDoubleClick={handleVolumeDoubleClick}
+        >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#5D5D5D" xmlns="http://www.w3.org/2000/svg">
             <path d="M3 9v6h4l5 5V4L7 9H3z" />
           </svg>
@@ -167,6 +186,9 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
             value={volume}
             onChange={handleVolumeChange}
           />
+          <div className="volume-indicator" style={{ opacity: showVolumeIndicator ? 1 : 0 }}>
+            {Math.round(volume * 100)}%
+          </div>
         </div>
 
         <button className="play-pause-button" onClick={onTogglePlayPause} ref={buttonRef}>

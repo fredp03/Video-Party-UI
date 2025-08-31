@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import { animate, stagger } from 'animejs'
 import './MenuBar.css'
 
 interface MenuBarProps {
@@ -6,8 +8,22 @@ interface MenuBarProps {
 }
 
 const MenuBar = ({ onChatToggle, isChatVisible }: MenuBarProps) => {
+  const menuBarRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (menuBarRef.current) {
+      const buttons = menuBarRef.current.querySelectorAll('button')
+      animate(buttons, {
+        opacity: [0, 1],
+        translateY: [-8, 0],
+        easing: 'easeOutQuad',
+        delay: stagger(80)
+      })
+    }
+  }, [])
+
   return (
-    <div className="menu-bar">
+    <div className="menu-bar" ref={menuBarRef}>
       <div className="left-side">
         <button className="home-button">
           <svg className="home-icon" width="47" height="45" viewBox="0 0 47 45" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -17,6 +17,10 @@
   gap: 30px;
 }
 
+.menu-bar button {
+  opacity: 0;
+}
+
 .home-button,
 .more-videos-button,
 .chat-button {

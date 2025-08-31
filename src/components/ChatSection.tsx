@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { animate } from 'animejs'
 import './ChatSection.css'
 
 interface Message {
@@ -14,6 +15,19 @@ interface ChatSectionProps {
 const ChatSection = ({ height }: ChatSectionProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
+  const containerRef = useRef<HTMLDivElement>(null)
+  const messagesRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (containerRef.current) {
+      animate(containerRef.current, {
+        translateX: [40, 0],
+        opacity: [0, 1],
+        easing: 'easeOutQuad',
+        duration: 400
+      })
+    }
+  }, [])
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
@@ -35,8 +49,21 @@ const ChatSection = ({ height }: ChatSectionProps) => {
 
   const chatStyle = height ? { height: `${height}px` } : {}
   
+  useEffect(() => {
+    if (messagesRef.current) {
+      const last = messagesRef.current.lastElementChild
+      if (last) {
+        animate(last as Element, {
+          translateX: [50, 0],
+          opacity: [0, 1],
+          easing: 'easeOutQuad'
+        })
+      }
+    }
+  }, [messages])
+
   return (
-    <div className="chat-section" style={chatStyle}>
+    <div className="chat-section" style={chatStyle} ref={containerRef}>
       {/* Close button */}
       <div className="close-button-wrapper">
         <div className="close-button">
@@ -47,7 +74,7 @@ const ChatSection = ({ height }: ChatSectionProps) => {
       </div>
 
       {/* Messages container */}
-      <div className="messages-container">
+      <div className="messages-container" ref={messagesRef}>
         {messages.map((message) => (
           <div key={message.id} className={`chat-message ${message.isOwn ? 'right' : 'left'}`}>
             <div className={`message-bubble ${message.isOwn ? 'green' : 'blue'}`}>

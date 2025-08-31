@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { animate } from 'animejs'
 import './VideoPlayer.css'
 
 interface VideoPlayerProps {
@@ -5,12 +7,23 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer = ({ isPlaying }: VideoPlayerProps) => {
+  useEffect(() => {
+    if (isPlaying) {
+      animate('.playing-indicator', {
+        opacity: [0, 1],
+        translateY: [-10, 0],
+        duration: 300,
+        easing: 'easeOutQuad'
+      })
+    }
+  }, [isPlaying])
+
   return (
     <div className="video-player">
-      <img 
-        className="tv-placeholder" 
-        src="https://placehold.co/1432x807/333333/ffffff?text=Video+Player" 
-        alt="Video Player Placeholder" 
+      <img
+        className="tv-placeholder"
+        src="https://placehold.co/1432x807/333333/ffffff?text=Video+Player"
+        alt="Video Player Placeholder"
       />
       {/* You can add a play indicator overlay here if needed */}
       {isPlaying && (

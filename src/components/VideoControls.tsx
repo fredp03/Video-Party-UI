@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { animate } from 'animejs'
 import './VideoControls.css'
 
 interface VideoControlsProps {
@@ -6,6 +8,14 @@ interface VideoControlsProps {
 }
 
 const VideoControls = ({ isPlaying, onTogglePlayPause }: VideoControlsProps) => {
+  useEffect(() => {
+    animate('.play-pause-button', {
+      scale: [0.9, 1],
+      duration: 300,
+      easing: 'easeOutBack'
+    })
+  }, [isPlaying])
+
   return (
     <div className="video-controls">
       <div className="video-progress">

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { animate } from 'animejs'
 import './ChatSection.css'
 
 interface Message {
@@ -14,6 +15,27 @@ interface ChatSectionProps {
 const ChatSection = ({ height }: ChatSectionProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
+
+  useEffect(() => {
+    animate('.chat-section', {
+      translateX: [50, 0],
+      opacity: [0, 1],
+      duration: 500,
+      easing: 'easeOutQuad'
+    })
+  }, [])
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const last = messages[messages.length - 1]
+      animate(`.chat-message[data-id='${last.id}']`, {
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 400,
+        easing: 'easeOutQuad'
+      })
+    }
+  }, [messages])
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
@@ -49,7 +71,11 @@ const ChatSection = ({ height }: ChatSectionProps) => {
       {/* Messages container */}
       <div className="messages-container">
         {messages.map((message) => (
-          <div key={message.id} className={`chat-message ${message.isOwn ? 'right' : 'left'}`}>
+          <div
+            key={message.id}
+            data-id={message.id}
+            className={`chat-message ${message.isOwn ? 'right' : 'left'}`}
+          >
             <div className={`message-bubble ${message.isOwn ? 'green' : 'blue'}`}>
               {message.text}
             </div>

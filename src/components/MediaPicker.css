@@ -1,0 +1,38 @@
+.media-picker {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.close-picker {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: #cecece;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.media-grid {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.media-item {
+  background: #444;
+  padding: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.media-item:hover {
+  background: #555;
+}

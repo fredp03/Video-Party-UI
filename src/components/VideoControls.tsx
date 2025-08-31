@@ -4,36 +4,19 @@ import './VideoControls.css'
 
 interface VideoControlsProps {
   isPlaying: boolean
+  currentTime: number
+  duration: number
   onTogglePlayPause: () => void
+  onSeek: (time: number) => void
 }
 
-const VideoControls = ({ isPlaying, onTogglePlayPause }: VideoControlsProps) => {
+const VideoControls = ({ isPlaying, currentTime, duration, onTogglePlayPause, onSeek }: VideoControlsProps) => {
   const progressRef = useRef<HTMLDivElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const progressAnim = useRef<ReturnType<typeof animate> | null>(null)
+  const dragging = useRef(false)
 
   useEffect(() => {
-    if (progressRef.current && progressBarRef.current) {
-      const width = progressBarRef.current.clientWidth - 19
-      progressAnim.current = animate(progressRef.current, {
-        translateX: width,
-        duration: 30000,
-        easing: 'linear',
-        autoplay: false
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    if (progressAnim.current) {
-      if (isPlaying) {
-        progressAnim.current.play()
-      } else {
-        progressAnim.current.pause()
-      }
-    }
-
     if (buttonRef.current) {
       animate(buttonRef.current, {
         scale: [0.9, 1],
@@ -43,9 +26,51 @@ const VideoControls = ({ isPlaying, onTogglePlayPause }: VideoControlsProps) => 
     }
   }, [isPlaying])
 
+  useEffect(() => {
+    if (progressRef.current && progressBarRef.current && duration) {
+      const width = progressBarRef.current.clientWidth - 19
+      const pos = (currentTime / duration) * width
+      animate(progressRef.current, {
+        translateX: pos,
+        duration: 200,
+        easing: 'linear'
+      })
+    }
+  }, [currentTime, duration])
+
+  const updateTime = (clientX: number) => {
+    if (progressBarRef.current) {
+      const rect = progressBarRef.current.getBoundingClientRect()
+      const ratio = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1)
+      onSeek(ratio * duration)
+    }
+  }
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    dragging.current = true
+    updateTime(e.clientX)
+  }
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (dragging.current) {
+      updateTime(e.clientX)
+    }
+  }
+
+  const handlePointerUp = () => {
+    dragging.current = false
+  }
+
   return (
     <div className="video-controls">
-      <div className="video-progress" ref={progressBarRef}>
+      <div
+        className="video-progress"
+        ref={progressBarRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
+      >
         <svg width="1422" height="2" viewBox="0 0 1422 2" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.70755 1H1420.96" stroke="#4D413F" strokeWidth="2" strokeLinecap="round"/>
         </svg>
@@ -72,13 +97,11 @@ const VideoControls = ({ isPlaying, onTogglePlayPause }: VideoControlsProps) => 
 
       <button className="play-pause-button" onClick={onTogglePlayPause} ref={buttonRef}>
         {isPlaying ? (
-          // Pause icon (two bars) - taller and perfectly centered
           <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="18.2" y="4" width="3.6" height="16" rx="1.8" fill="#5D5D5D"/>
             <rect x="26.2" y="4" width="3.6" height="16" rx="1.8" fill="#5D5D5D"/>
           </svg>
         ) : (
-          // Play icon (triangle) - taller and centered
           <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16.6 4L31.4 12L16.6 20V4Z" fill="#5D5D5D"/>
           </svg>

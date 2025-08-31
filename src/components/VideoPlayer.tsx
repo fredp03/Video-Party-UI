@@ -4,9 +4,12 @@ import './VideoPlayer.css'
 
 interface VideoPlayerProps {
   isPlaying: boolean
+  src: string
+  isChatVisible: boolean
+  videoRef: React.RefObject<HTMLVideoElement | null>
 }
 
-const VideoPlayer = ({ isPlaying }: VideoPlayerProps) => {
+const VideoPlayer = ({ isPlaying, src, isChatVisible, videoRef }: VideoPlayerProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const indicatorRef = useRef<HTMLDivElement>(null)
   const indicatorAnim = useRef<ReturnType<typeof animate> | null>(null)
@@ -23,6 +26,26 @@ const VideoPlayer = ({ isPlaying }: VideoPlayerProps) => {
   }, [])
 
   useEffect(() => {
+    if (containerRef.current) {
+      animate(containerRef.current, {
+        scale: isChatVisible ? 0.98 : 1,
+        translateX: isChatVisible ? -10 : 0,
+        duration: 300,
+        easing: 'easeOutQuad'
+      })
+    }
+  }, [isChatVisible])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (video) {
+      if (isPlaying) {
+        void video.play()
+      } else {
+        video.pause()
+      }
+    }
+
     indicatorAnim.current?.cancel()
     if (isPlaying && indicatorRef.current) {
       indicatorAnim.current = animate(indicatorRef.current, {
@@ -34,14 +57,15 @@ const VideoPlayer = ({ isPlaying }: VideoPlayerProps) => {
         loop: true
       })
     }
-  }, [isPlaying])
+  }, [isPlaying, videoRef])
 
   return (
     <div className="video-player" ref={containerRef}>
-      <img
-        className="tv-placeholder"
-        src="https://placehold.co/1432x807/333333/ffffff?text=Video+Player"
-        alt="Video Player Placeholder"
+      <video
+        ref={videoRef}
+        className="video-element"
+        src={src}
+        controls={false}
       />
       {isPlaying && (
         <div

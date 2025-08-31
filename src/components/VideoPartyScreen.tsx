@@ -7,12 +7,22 @@ import ChatSection from './ChatSection.tsx'
 
 const VideoPartyScreen = () => {
   const [isChatVisible, setIsChatVisible] = useState(false)
+  const [shouldRenderChat, setShouldRenderChat] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [chatHeight, setChatHeight] = useState<number | undefined>(undefined)
   const mediaItemsRef = useRef<HTMLDivElement>(null)
 
   const toggleChat = () => {
-    setIsChatVisible(!isChatVisible)
+    if (isChatVisible) {
+      setIsChatVisible(false)
+    } else {
+      setShouldRenderChat(true)
+      setIsChatVisible(true)
+    }
+  }
+
+  const handleChatClosed = () => {
+    setShouldRenderChat(false)
   }
 
   const togglePlayPause = () => {
@@ -20,26 +30,26 @@ const VideoPartyScreen = () => {
   }
 
   useEffect(() => {
-    if (isChatVisible && mediaItemsRef.current) {
+    if (shouldRenderChat && mediaItemsRef.current) {
       const updateChatHeight = () => {
         if (mediaItemsRef.current) {
           const rect = mediaItemsRef.current.getBoundingClientRect()
           setChatHeight(rect.height)
         }
       }
-      
+
       updateChatHeight()
       window.addEventListener('resize', updateChatHeight)
-      
+
       return () => window.removeEventListener('resize', updateChatHeight)
     }
-  }, [isChatVisible])
+  }, [shouldRenderChat])
 
   return (
     <div className="netflix-party-screen">
       <div className={`screen-container ${isChatVisible ? 'chat-visible' : 'chat-hidden'}`}>
         <MenuBar onChatToggle={toggleChat} isChatVisible={isChatVisible} />
-        
+
         <div className="horizontal-wrapper">
           <div
             className={`media-items ${isChatVisible ? '' : 'fullscreen'}`}
@@ -51,7 +61,14 @@ const VideoPartyScreen = () => {
               onTogglePlayPause={togglePlayPause}
             />
           </div>
-          {isChatVisible && <ChatSection height={chatHeight} />}
+          {shouldRenderChat && (
+            <ChatSection
+              height={chatHeight}
+              isVisible={isChatVisible}
+              onRequestClose={() => setIsChatVisible(false)}
+              onClosed={handleChatClosed}
+            />
+          )}
         </div>
       </div>
     </div>

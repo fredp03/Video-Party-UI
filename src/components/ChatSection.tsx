@@ -10,9 +10,12 @@ interface Message {
 
 interface ChatSectionProps {
   height?: number
+  isVisible: boolean
+  onRequestClose: () => void
+  onClosed: () => void
 }
 
-const ChatSection = ({ height }: ChatSectionProps) => {
+const ChatSection = ({ height, isVisible, onRequestClose, onClosed }: ChatSectionProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
   const containerRef = useRef<HTMLDivElement>(null)
@@ -28,6 +31,18 @@ const ChatSection = ({ height }: ChatSectionProps) => {
       })
     }
   }, [])
+
+  useEffect(() => {
+    if (!isVisible && containerRef.current) {
+      animate(containerRef.current, {
+        translateX: [0, 40],
+        opacity: [1, 0],
+        easing: 'easeInQuad',
+        duration: 300,
+        complete: onClosed
+      })
+    }
+  }, [isVisible, onClosed])
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
@@ -66,7 +81,7 @@ const ChatSection = ({ height }: ChatSectionProps) => {
     <div className="chat-section" style={chatStyle} ref={containerRef}>
       {/* Close button */}
       <div className="close-button-wrapper">
-        <div className="close-button">
+        <div className="close-button" onClick={onRequestClose}>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M13 1L1 13M1 1L13 13" stroke="#999" strokeWidth="2" strokeLinecap="round"/>
           </svg>

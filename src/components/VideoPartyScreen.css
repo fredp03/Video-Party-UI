@@ -33,6 +33,10 @@
   min-height: 0;
 }
 
+.horizontal-wrapper.chat-closed {
+  justify-content: center;
+}
+
 .media-items {
   flex: 1;
   padding: 14px 20px;

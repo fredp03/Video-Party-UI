@@ -39,21 +39,17 @@ const VideoPartyScreen = () => {
     <div className="netflix-party-screen">
       <div className={`screen-container ${isChatVisible ? 'chat-visible' : 'chat-hidden'}`}>
         <MenuBar onChatToggle={toggleChat} isChatVisible={isChatVisible} />
-        
-        {isChatVisible ? (
-          <div className="horizontal-wrapper">
-            <div className="media-items" ref={mediaItemsRef}>
-              <VideoPlayer isPlaying={isPlaying} />
-              <VideoControls isPlaying={isPlaying} onTogglePlayPause={togglePlayPause} />
-            </div>
-            <ChatSection height={chatHeight} />
-          </div>
-        ) : (
-          <div className="media-items fullscreen">
+
+        <div className={`horizontal-wrapper ${isChatVisible ? 'chat-open' : 'chat-closed'}`}>
+          <div
+            className={`media-items ${isChatVisible ? '' : 'fullscreen'}`}
+            ref={mediaItemsRef}
+          >
             <VideoPlayer isPlaying={isPlaying} />
             <VideoControls isPlaying={isPlaying} onTogglePlayPause={togglePlayPause} />
           </div>
-        )}
+          {isChatVisible && <ChatSection height={chatHeight} />}
+        </div>
       </div>
     </div>
   )

@@ -12,9 +12,10 @@
   flex-direction: column;
   gap: 12px;
   min-height: 0;
-  position: relative;
-  margin: 0 auto;
-}
+    position: relative;
+    margin: 0 auto;
+    opacity: 0;
+  }
 
 .close-button-wrapper {
   display: flex;

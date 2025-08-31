@@ -16,6 +16,9 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
   const [progress, setProgress] = useState(0)
   const [isScrubbing, setIsScrubbing] = useState(false)
   const [volume, setVolume] = useState(1)
+  const [boosted, setBoosted] = useState(false)
+  const audioCtxRef = useRef<AudioContext | null>(null)
+  const gainRef = useRef<GainNode | null>(null)
 
   useEffect(() => {
     const vid = videoRef.current
@@ -62,7 +65,19 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const vol = parseFloat(e.target.value)
     setVolume(vol)
-    if (videoRef.current) videoRef.current.volume = vol
+    if (videoRef.current) videoRef.current.volume = Math.min(vol, 1)
+    if (gainRef.current) gainRef.current.gain.value = vol
+  }
+
+  const handleVolumePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    const boost = e.metaKey
+    setBoosted(boost)
+    if (!boost && volume > 1) {
+      const clamped = 1
+      setVolume(clamped)
+      if (videoRef.current) videoRef.current.volume = clamped
+      if (gainRef.current) gainRef.current.gain.value = clamped
+    }
   }
 
   const handleFullscreen = () => {
@@ -107,6 +122,23 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    if (!videoRef.current) return
+    if (!audioCtxRef.current) {
+      const ctx = new AudioContext()
+      const source = ctx.createMediaElementSource(videoRef.current)
+      const gain = ctx.createGain()
+      source.connect(gain).connect(ctx.destination)
+      gain.gain.value = volume
+      audioCtxRef.current = ctx
+      gainRef.current = gain
+    }
+  }, [videoRef, volume])
+
+  useEffect(() => {
+    if (gainRef.current) gainRef.current.gain.value = volume
+  }, [volume])
+
   return (
     <div className="video-controls">
       <div
@@ -123,14 +155,14 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
       </div>
 
       <div className="control-buttons">
-        <div className="volume-control">
+        <div className="volume-control" onPointerDown={handleVolumePointerDown}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#5D5D5D" xmlns="http://www.w3.org/2000/svg">
             <path d="M3 9v6h4l5 5V4L7 9H3z" />
           </svg>
           <input
             type="range"
             min="0"
-            max="1"
+            max={boosted ? 4 : 1}
             step="0.01"
             value={volume}
             onChange={handleVolumeChange}

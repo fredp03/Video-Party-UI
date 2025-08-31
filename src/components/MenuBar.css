@@ -17,6 +17,16 @@
   gap: 30px;
 }
 
+.right-side {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.menu-bar button {
+  opacity: 0;
+}
+
 .home-button,
 .more-videos-button,
 .chat-button {
@@ -172,5 +182,9 @@
 }
 
 .chat-button.active svg g {
+  opacity: 1;
+}
+
+.more-videos-button.active {
   opacity: 1;
 }

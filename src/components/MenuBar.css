@@ -136,3 +136,8 @@
 .media-button:hover {
   transform: scale(1.05);
 }
+
+.movie-icon {
+  width: 45px;
+  height: 45px;
+}

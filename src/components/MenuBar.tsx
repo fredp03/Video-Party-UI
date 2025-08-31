@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { animate, stagger } from 'animejs'
+import movieIcon from '../assets/movie-icon.svg'
 import './MenuBar.css'
 
 interface MenuBarProps {
@@ -85,52 +86,7 @@ const MenuBar = ({ onChatToggle, isChatVisible, onMediaToggle, isMediaVisible }:
           className={`media-button ${isMediaVisible ? 'active' : ''}`}
           onClick={onMediaToggle}
         >
-          <svg className="more-videos-icon" width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g opacity="0.74" filter="url(#filter0_ddiiii_1_19081)">
-              <rect x="3" y="3" width="38.9679" height="39" rx="5" fill="#484848" fillOpacity="0.82"/>
-              <path d="M14.9679 21.9794V29.9794C14.9679 30.5098 15.1787 31.0185 15.5537 31.3936C15.9288 31.7687 16.4375 31.9794 16.9679 31.9794H28.9679C29.4984 31.9794 30.0071 31.7687 30.3822 31.3936C30.7572 31.0185 30.9679 30.5098 30.9679 29.9794V21.9794H14.9679ZM14.9679 21.9794L14.0879 19.1094C14.0108 18.8579 13.984 18.5937 14.0091 18.3318C14.0343 18.07 14.1108 17.8157 14.2343 17.5835C14.3579 17.3512 14.526 17.1457 14.7291 16.9785C14.9322 16.8114 15.1663 16.6859 15.4179 16.6094L26.898 13.1094C27.4045 12.9532 27.9524 13.0045 28.4211 13.252C28.8899 13.4995 29.2413 13.923 29.398 14.4294L30.2679 17.2994L14.9679 21.9894L14.9679 21.9794ZM17.5679 15.9694L20.9479 20.1694M22.8279 14.3594L26.2079 18.5594" stroke="#CECECE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </g>
-            <defs>
-              <filter id="filter0_ddiiii_1_19081" x="0" y="0" width="44.968" height="45" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                <feOffset dx="-1" dy="-1"/>
-                <feGaussianBlur stdDeviation="1"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0.113725 0 0 0 0.113725 0 0 0 0.113725 0 0 0 0.5 0"/>
-                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_19081"/>
-                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                <feOffset dx="1" dy="1"/>
-                <feGaussianBlur stdDeviation="1"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0.45098 0 0 0 0 0.45098 0 0 0 0 0.45098 0 0 0 0.3 0"/>
-                <feBlend mode="normal" in2="effect1_dropShadow_1_19081" result="effect2_dropShadow_1_19081"/>
-                <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_1_19081" result="shape"/>
-                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                <feOffset dx="1" dy="1"/>
-                <feGaussianBlur stdDeviation="1.5"/>
-                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0.113725 0 0 0 0.113725 0 0 0 0.113725 0 0 0 0.9 0"/>
-                <feBlend mode="normal" in2="shape" result="effect3_innerShadow_1_19081"/>
-                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                <feOffset dx="-1" dy="-1"/>
-                <feGaussianBlur stdDeviation="1"/>
-                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0.45098 0 0 0 0 0.45098 0 0 0 0 0.45098 0 0 0 0.9 0"/>
-                <feBlend mode="normal" in2="effect3_innerShadow_1_19081" result="effect4_innerShadow_1_19081"/>
-                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                <feOffset dx="1" dy="-1"/>
-                <feGaussianBlur stdDeviation="1"/>
-                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0.113725 0 0 0 0.113725 0 0 0 0.113725 0 0 0 0.2 0"/>
-                <feBlend mode="normal" in2="effect4_innerShadow_1_19081" result="effect5_innerShadow_1_19081"/>
-                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                <feOffset dx="-1" dy="1"/>
-                <feGaussianBlur stdDeviation="1"/>
-                <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-                <feColorMatrix type="matrix" values="0 0 0 0 0.113725 0 0 0 0.113725 0 0 0 0.113725 0 0 0 0.2 0"/>
-                <feBlend mode="normal" in2="effect5_innerShadow_1_19081" result="effect6_innerShadow_1_19081"/>
-              </filter>
-            </defs>
-          </svg>
+          <img src={movieIcon} alt="media" width={45} height={45} />
         </button>
         <button
           className={`chat-button ${isChatVisible ? 'active' : ''}`}

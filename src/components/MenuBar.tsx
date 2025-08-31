@@ -1,13 +1,36 @@
+import { useEffect, useRef } from 'react'
+import { animate, stagger } from 'animejs'
 import './MenuBar.css'
 
 interface MenuBarProps {
   onChatToggle: () => void
   isChatVisible: boolean
+  onLibraryToggle: () => void
+  isLibraryVisible: boolean
 }
 
-const MenuBar = ({ onChatToggle, isChatVisible }: MenuBarProps) => {
+const MenuBar = ({
+  onChatToggle,
+  isChatVisible,
+  onLibraryToggle,
+  isLibraryVisible
+}: MenuBarProps) => {
+  const menuBarRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (menuBarRef.current) {
+      const buttons = menuBarRef.current.querySelectorAll('button')
+      animate(buttons, {
+        opacity: [0, 1],
+        translateY: [-8, 0],
+        easing: 'easeOutQuad',
+        delay: stagger(80)
+      })
+    }
+  }, [])
+
   return (
-    <div className="menu-bar">
+    <div className="menu-bar" ref={menuBarRef}>
       <div className="left-side">
         <button className="home-button">
           <svg className="home-icon" width="47" height="45" viewBox="0 0 47 45" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -113,19 +136,34 @@ const MenuBar = ({ onChatToggle, isChatVisible }: MenuBarProps) => {
           </div>
         </button>
       </div>
-      
-      <button 
-        className={`chat-button ${isChatVisible ? 'active' : ''}`} 
-        onClick={onChatToggle}
-      >
-        <svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g opacity={isChatVisible ? "1" : "0.45"}>
-            <path opacity="0.64" d="M15 28C21.9036 28 27.5 22.4036 27.5 15.5C27.5 8.59644 21.9036 3 15 3C8.09644 3 2.5 8.59644 2.5 15.5C2.5 17.4996 2.96952 19.3895 3.80433 21.0656C4.02617 21.511 4.10001 22.0201 3.9714 22.5008L3.22689 25.2833C2.90369 26.4912 4.00877 27.5963 5.21668 27.2731L7.99923 26.5286C8.47992 26.4 8.98901 26.4738 9.43441 26.6957C11.1105 27.5305 13.0004 28 15 28Z" fill="#484848" fillOpacity="0.78"/>
-            <path d="M9.78125 16.5625C9.21171 16.5625 8.75 17.0242 8.75 17.5937C8.75 18.1633 9.21171 18.625 9.78125 18.625H17.3438C17.9133 18.625 18.375 18.1633 18.375 17.5937C18.375 17.0242 17.9133 16.5625 17.3438 16.5625H9.78125Z" fill="black"/>
-            <path d="M9.78125 11.75C9.21171 11.75 8.75 12.2117 8.75 12.7812C8.75 13.3508 9.21171 13.8125 9.78125 13.8125H20.7812C21.3508 13.8125 21.8125 13.3508 21.8125 12.7812C21.8125 12.2117 21.3508 11.75 20.7812 11.75H9.78125Z" fill="black"/>
-          </g>
-        </svg>
-      </button>
+
+      <div className="right-side">
+        <button
+          className={`library-button ${isLibraryVisible ? 'active' : ''}`}
+          onClick={onLibraryToggle}
+        >
+          <svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g opacity={isLibraryVisible ? "1" : "0.45"}>
+              <rect x="5" y="8" width="20" height="15" rx="2" fill="#484848" fillOpacity="0.78"/>
+              <path d="M8 12H22" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+              <path d="M8 16H22" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+            </g>
+          </svg>
+        </button>
+
+        <button
+          className={`chat-button ${isChatVisible ? 'active' : ''}`}
+          onClick={onChatToggle}
+        >
+          <svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g opacity={isChatVisible ? "1" : "0.45"}>
+              <path opacity="0.64" d="M15 28C21.9036 28 27.5 22.4036 27.5 15.5C27.5 8.59644 21.9036 3 15 3C8.09644 3 2.5 8.59644 2.5 15.5C2.5 17.4996 2.96952 19.3895 3.80433 21.0656C4.02617 21.511 4.10001 22.0201 3.9714 22.5008L3.22689 25.2833C2.90369 26.4912 4.00877 27.5963 5.21668 27.2731L7.99923 26.5286C8.47992 26.4 8.98901 26.4738 9.43441 26.6957C11.1105 27.5305 13.0004 28 15 28Z" fill="#484848" fillOpacity="0.78"/>
+              <path d="M9.78125 16.5625C9.21171 16.5625 8.75 17.0242 8.75 17.5937C8.75 18.1633 9.21171 18.625 9.78125 18.625H17.3438C17.9133 18.625 18.375 18.1633 18.375 17.5937C18.375 17.0242 17.9133 16.5625 17.3438 16.5625H9.78125Z" fill="black"/>
+              <path d="M9.78125 11.75C9.21171 11.75 8.75 12.2117 8.75 12.7812C8.75 13.3508 9.21171 13.8125 9.78125 13.8125H20.7812C21.3508 13.8125 21.8125 13.3508 21.8125 12.7812C21.8125 12.2117 21.3508 11.75 20.7812 11.75H9.78125Z" fill="black"/>
+            </g>
+          </svg>
+        </button>
+      </div>
     </div>
   )
 }

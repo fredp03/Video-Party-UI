@@ -17,9 +17,14 @@
   gap: 30px;
 }
 
+.menu-bar button {
+  opacity: 0;
+}
+
 .home-button,
 .more-videos-button,
-.chat-button {
+.chat-button,
+.library-button {
   background: none;
   border: none;
   cursor: pointer;
@@ -158,6 +163,12 @@
 
 
 
+.right-side {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .chat-button {
   position: relative;
   transition: all 0.2s ease;
@@ -171,6 +182,16 @@
   opacity: 1;
 }
 
-.chat-button.active svg g {
+.chat-button.active svg g,
+.library-button.active svg g {
   opacity: 1;
+}
+
+.library-button {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.library-button:hover {
+  transform: scale(1.05);
 }

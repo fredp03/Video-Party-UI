@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import { animate as anime } from 'animejs'
 import './VideoControls.css'
 
 interface VideoControlsProps {
@@ -6,8 +8,34 @@ interface VideoControlsProps {
 }
 
 const VideoControls = ({ isPlaying, onTogglePlayPause }: VideoControlsProps) => {
+  const controlsRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  // Fade in controls on mount
+  useEffect(() => {
+    if (controlsRef.current) {
+      anime(controlsRef.current, {
+        opacity: [0, 1],
+        translateY: [10, 0],
+        duration: 600,
+        easing: 'easeOutQuad'
+      })
+    }
+  }, [])
+
+  const handleClick = () => {
+    onTogglePlayPause()
+    if (buttonRef.current) {
+      anime(buttonRef.current, {
+        scale: [1, 0.9, 1],
+        duration: 300,
+        easing: 'easeInOutSine'
+      })
+    }
+  }
+
   return (
-    <div className="video-controls">
+    <div className="video-controls" ref={controlsRef}>
       <div className="video-progress">
         <svg width="1422" height="2" viewBox="0 0 1422 2" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1.70755 1H1420.96" stroke="#4D413F" strokeWidth="2" strokeLinecap="round"/>
@@ -32,8 +60,8 @@ const VideoControls = ({ isPlaying, onTogglePlayPause }: VideoControlsProps) => 
           </svg>
         </div>
       </div>
-      
-      <button className="play-pause-button" onClick={onTogglePlayPause}>
+
+      <button className="play-pause-button" ref={buttonRef} onClick={handleClick}>
         {isPlaying ? (
           // Pause icon (two bars) - taller and perfectly centered
           <svg width="48" height="24" viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg">

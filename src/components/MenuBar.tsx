@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import { animate as anime, createTimeline, stagger } from 'animejs'
 import './MenuBar.css'
 
 interface MenuBarProps {
@@ -6,10 +8,51 @@ interface MenuBarProps {
 }
 
 const MenuBar = ({ onChatToggle, isChatVisible }: MenuBarProps) => {
+  const barRef = useRef<HTMLDivElement>(null)
+
+  // Staggered entrance to showcase anime.js timelines
+  useEffect(() => {
+    if (barRef.current) {
+      const buttons = barRef.current.querySelectorAll('button')
+      const tl = createTimeline()
+      tl
+        .add(barRef.current, {
+          opacity: [0, 1],
+          translateY: [-10, 0],
+          duration: 500,
+          easing: 'easeOutQuad'
+        })
+        .add(
+          buttons,
+          {
+            opacity: [0, 1],
+            translateY: [-10, 0],
+            delay: stagger(100),
+            easing: 'easeOutQuad'
+          },
+          '-=300'
+        )
+    }
+  }, [])
+
+  const animateHover = (el: HTMLElement | null, show: boolean) => {
+    if (!el) return
+    anime(el, {
+      opacity: show ? 0.74 : 0,
+      scale: show ? [0.95, 1] : [1, 0.95],
+      duration: 300,
+      easing: 'easeOutQuad'
+    })
+  }
+
   return (
-    <div className="menu-bar">
+    <div className="menu-bar" ref={barRef}>
       <div className="left-side">
-        <button className="home-button">
+        <button
+          className="home-button"
+          onMouseEnter={(e) => animateHover(e.currentTarget.querySelector('.home-hovered'), true)}
+          onMouseLeave={(e) => animateHover(e.currentTarget.querySelector('.home-hovered'), false)}
+        >
           <svg className="home-icon" width="47" height="45" viewBox="0 0 47 45" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g opacity="0.74" filter="url(#filter0_ddiiii_1_19104)">
               <rect x="3" y="3" width="41" height="39" rx="5" fill="#484848" fillOpacity="0.82"/>
@@ -61,7 +104,11 @@ const MenuBar = ({ onChatToggle, isChatVisible }: MenuBarProps) => {
           </div>
         </button>
         
-        <button className="more-videos-button">
+        <button
+          className="more-videos-button"
+          onMouseEnter={(e) => animateHover(e.currentTarget.querySelector('.more-videos-hovered'), true)}
+          onMouseLeave={(e) => animateHover(e.currentTarget.querySelector('.more-videos-hovered'), false)}
+        >
           <svg className="more-videos-icon" width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g opacity="0.74" filter="url(#filter0_ddiiii_1_19081)">
               <rect x="3" y="3" width="38.9679" height="39" rx="5" fill="#484848" fillOpacity="0.82"/>
@@ -114,8 +161,8 @@ const MenuBar = ({ onChatToggle, isChatVisible }: MenuBarProps) => {
         </button>
       </div>
       
-      <button 
-        className={`chat-button ${isChatVisible ? 'active' : ''}`} 
+      <button
+        className={`chat-button ${isChatVisible ? 'active' : ''}`}
         onClick={onChatToggle}
       >
         <svg width="30" height="31" viewBox="0 0 30 31" fill="none" xmlns="http://www.w3.org/2000/svg">

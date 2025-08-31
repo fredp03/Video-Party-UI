@@ -7,6 +7,8 @@
   overflow: hidden;
   position: relative;
   margin: 0 auto; /* Center the video player when it's constrained */
+  opacity: 0;
+  transform: scale(0.97);
 }
 
 .video-player::before {
@@ -24,4 +26,17 @@
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.playing-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  opacity: 0.6;
+  pointer-events: none;
 }

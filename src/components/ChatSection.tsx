@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { animate as anime } from 'animejs'
 import './ChatSection.css'
 
 interface Message {
@@ -14,6 +15,7 @@ interface ChatSectionProps {
 const ChatSection = ({ height }: ChatSectionProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
+  const sectionRef = useRef<HTMLDivElement>(null)
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
@@ -34,9 +36,36 @@ const ChatSection = ({ height }: ChatSectionProps) => {
   }
 
   const chatStyle = height ? { height: `${height}px` } : {}
-  
+
+  // Slide in the chat section when it mounts
+  useEffect(() => {
+    if (sectionRef.current) {
+      anime(sectionRef.current, {
+        translateX: [20, 0],
+        opacity: [0, 1],
+        duration: 500,
+        easing: 'easeOutQuad'
+      })
+    }
+  }, [])
+
+  // Animate new messages subtly
+  useEffect(() => {
+    if (messages.length) {
+      const el = document.querySelector('.chat-message:last-child')
+      if (el) {
+        anime(el, {
+          translateY: [20, 0],
+          opacity: [0, 1],
+          duration: 500,
+          easing: 'easeOutQuad'
+        })
+      }
+    }
+  }, [messages])
+
   return (
-    <div className="chat-section" style={chatStyle}>
+    <div className="chat-section" ref={sectionRef} style={chatStyle}>
       {/* Close button */}
       <div className="close-button-wrapper">
         <div className="close-button">

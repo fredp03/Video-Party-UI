@@ -7,6 +7,8 @@
   gap: 30px;
   min-height: 60px;
   max-height: 60px;
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .left-side {
@@ -78,14 +80,11 @@
   position: absolute;
   top: 50%;
   left: 0;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scale(0.95);
   z-index: 1;
-  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
-.home-button:hover .home-hovered {
-  opacity: 0.74;
-}
 
 .more-videos-button {
   width: 45px;
@@ -135,14 +134,11 @@
   position: absolute;
   top: 50%;
   left: 0;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scale(0.95);
   z-index: 1;
-  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
-.more-videos-button:hover .more-videos-hovered {
-  opacity: 0.74;
-}
 
 .more-videos-hovered span,
 .home-hovered span {

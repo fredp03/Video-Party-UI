@@ -12,6 +12,7 @@ const VideoPlayer = ({ isPlaying, videoRef }: VideoPlayerProps) => {
   const indicatorRef = useRef<HTMLDivElement>(null)
   const indicatorAnim = useRef<ReturnType<typeof animate> | null>(null)
   const [volume, setVolume] = useState(1)
+  const [showControls, setShowControls] = useState(false)
 
   useEffect(() => {
     if (containerRef.current) {
@@ -48,6 +49,18 @@ const VideoPlayer = ({ isPlaying, videoRef }: VideoPlayerProps) => {
     }
   }, [isPlaying, videoRef])
 
+  useEffect(() => {
+    const onFsChange = () => {
+      if (document.fullscreenElement) {
+        setShowControls(false)
+      } else {
+        setShowControls(true)
+      }
+    }
+    document.addEventListener('fullscreenchange', onFsChange)
+    return () => document.removeEventListener('fullscreenchange', onFsChange)
+  }, [])
+
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const vol = parseFloat(e.target.value)
     setVolume(vol)
@@ -64,8 +77,15 @@ const VideoPlayer = ({ isPlaying, videoRef }: VideoPlayerProps) => {
     }
   }
 
+  const handleMouseLeave = () => setShowControls(false)
+
   return (
-    <div className="video-player" ref={containerRef}>
+    <div
+      className="video-player"
+      ref={containerRef}
+      onMouseMove={() => setShowControls(true)}
+      onMouseLeave={handleMouseLeave}
+    >
       <video
         ref={videoRef}
         className="video-element"
@@ -90,7 +110,7 @@ const VideoPlayer = ({ isPlaying, videoRef }: VideoPlayerProps) => {
         </div>
       )}
 
-      <div className="video-hover-controls">
+      <div className={`video-hover-controls ${showControls ? 'visible' : ''}`}>
         <div className="volume-control">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg">
             <path d="M3 9v6h4l5 5V4L7 9H3z" />

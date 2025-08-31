@@ -12,6 +12,7 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
   const progressBarRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const progressVal = useRef(0)
   const [progress, setProgress] = useState(0)
   const [isScrubbing, setIsScrubbing] = useState(false)
 
@@ -72,7 +73,22 @@ const VideoControls = ({ isPlaying, onTogglePlayPause, videoRef }: VideoControls
       const width = progressBarRef.current.clientWidth
       progressRef.current.style.left = `${progress * width}px`
     }
+    progressVal.current = progress
   }, [progress])
+
+  useEffect(() => {
+    if (!progressBarRef.current) return
+    const bar = progressBarRef.current
+    const update = () => {
+      if (progressRef.current) {
+        const width = bar.clientWidth
+        progressRef.current.style.left = `${progressVal.current * width}px`
+      }
+    }
+    const observer = new ResizeObserver(update)
+    observer.observe(bar)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className="video-controls">

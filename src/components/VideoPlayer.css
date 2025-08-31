@@ -35,10 +35,12 @@
   gap: 8px;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
-.video-player:hover .video-hover-controls {
+.video-hover-controls.visible {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .volume-control {

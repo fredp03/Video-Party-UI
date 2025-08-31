@@ -83,6 +83,14 @@ const VideoPartyScreen = () => {
             videoRef.current.currentTime + 10
           )
         }
+      } else if (e.code === 'KeyF') {
+        if (videoRef.current) {
+          if (document.fullscreenElement) {
+            document.exitFullscreen()
+          } else {
+            videoRef.current.requestFullscreen?.()
+          }
+        }
       }
     }
 

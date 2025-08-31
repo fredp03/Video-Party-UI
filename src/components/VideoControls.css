@@ -47,6 +47,12 @@
   opacity: 1;
 }
 
+.control-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .play-pause-button {
   background: none;
   border: none;
@@ -67,4 +73,36 @@
 
 .play-pause-button:hover {
   opacity: 0.8;
+}
+
+.volume-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.volume-control input[type='range'] {
+  width: 80px;
+}
+
+.volume-indicator {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #333;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.fullscreen-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
